@@ -18,17 +18,20 @@ public class Movie {
     public String mTrailerUrl;
     public String mUrlKey;
     public String mGenre;
-
-    public String mTheaterName;
-    public String mTheaterImageUrl;
-    public String mTheaterCinemaName;
-    public String mTheaterCinemaAddress;
-    public String mTheaterUrlKey;
-
+    
     public Bitmap bitmap;
 
     public Movie(String mMovieName, float mImdbRate, Bitmap bitmap) {
         this.mMovieName = mMovieName;
+        this.mImdbRate = mImdbRate;
+        this.bitmap = bitmap;
+    }
+
+    public Movie(String mMovieName, String mBookingStartDate, String mReleaseDate, String mEndDate, float mImdbRate,  Bitmap bitmap) {
+        this.mMovieName = mMovieName;
+        this.mBookingStartDate = mBookingStartDate;
+        this.mReleaseDate = mReleaseDate;
+        this.mEndDate = mEndDate;
         this.mImdbRate = mImdbRate;
         this.bitmap = bitmap;
     }

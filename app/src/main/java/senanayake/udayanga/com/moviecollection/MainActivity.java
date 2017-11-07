@@ -23,7 +23,11 @@ import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse {
@@ -55,10 +59,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        viewContact();
+        viewMovies();
     }
 
-    public void viewContact() {
+    public void viewMovies() {
         String url = "http://dev.appslanka.com/android-test/movies.php";
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -80,19 +84,45 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     @Override
     public void processFinish(JSONObject object) {
         ArrayList<Movie> arrayList = new ArrayList<>();
+        ArrayList<Theater> theaterArrayList = new ArrayList<>();
         try {
             JSONArray jsonArray = object.getJSONArray("data");
 
             for (int i = 0; i < jsonArray.length(); i++) {
-//                JSONObject jo=new JSONObject(jsonArray.getString(i));
-                JSONObject jo = jsonArray.getJSONObject(i);
+                JSONObject dataObject = jsonArray.getJSONObject(i);
+                JSONArray theaterArray = dataObject.getJSONArray("theater");
 
-                LoadImage loadImage = new LoadImage();
-                Bitmap bitmap = loadImage.execute(jo.getString("portrait_image")).get();
-                arrayList.add(new Movie(jo.getString("movie_name"), jo.getInt("imdb_rate"), bitmap));
+
+                if (checkDate(dataObject.getString("end_date"))) {
+                    LoadImage loadImage = new LoadImage();
+                    Bitmap bitmap = loadImage.execute(dataObject.getString("portrait_image")).get();
+                    arrayList.add(new Movie(
+                            dataObject.getString("movie_name"),
+                            dataObject.getString("booking_start_date"),
+                            dataObject.getString("date_release"),
+                            dataObject.getString("end_date"),
+                            dataObject.getInt("imdb_rate"),
+                            bitmap
+                    ));
+
+                    for (int j = 0; j < theaterArray.length(); j++) {
+                        JSONObject theaterObject = theaterArray.getJSONObject(j);
+                        theaterArrayList.add(new Theater(
+                                theaterObject.getString("name"),
+                                theaterObject.getString("image"),
+                                theaterObject.getString("cinema_name"),
+                                theaterObject.getString("cinema_address"),
+                                theaterObject.getString("url_key")
+
+                        ));
+                    }
+
+                }
             }
             MyAdapter myAdapter = new MyAdapter(MainActivity.this, arrayList);
             ListView listView = (ListView) findViewById(R.id.list_jason);
+//            ListView listView1=(ListView)findViewById(R.id.list_theater);
+//            listView1.setAdapter(myAdapter);
             listView.setAdapter(myAdapter);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -101,6 +131,23 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean checkDate(String endDate) {
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date today = new Date();
+        Date eDate = null;
+        try {
+            eDate = format.parse(endDate);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (today.before(eDate)) {
+            return true;
+        }
+        return false;
+
     }
 
     public class LoadImage extends AsyncTask<String, String, Bitmap> {

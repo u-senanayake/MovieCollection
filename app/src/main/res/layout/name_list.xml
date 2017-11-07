@@ -13,7 +13,7 @@
         <ImageView
             android:id="@+id/image"
             android:layout_width="100dp"
-            android:layout_height="250dp"
+            android:layout_height="300dp"
             android:layout_alignParentLeft="true"
             android:layout_toLeftOf="@+id/nameLayout" />
 
@@ -45,14 +45,10 @@
                 android:stepSize="1.0"
                 style="?android:attr/ratingBarStyleSmall"/>
 
-            <TextView
-                android:id="@+id/cinema"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="number"
-                android:text="Description" />
+            <!--<ListView-->
+                <!--android:id="@+id/list_theater"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"></ListView>-->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -70,11 +66,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Book" />
-                <!--<Button-->
-                <!--android:id="@+id/date"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="Date"/>-->
+
             </LinearLayout>
 
 
